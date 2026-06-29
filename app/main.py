@@ -18,18 +18,9 @@ KNIGHTS = {
         "power": 45,
         "hp": 75,
         "armour": [
-            {
-                "part": "helmet",
-                "protection": 15,
-            },
-            {
-                "part": "breastplate",
-                "protection": 20,
-            },
-            {
-                "part": "boots",
-                "protection": 10,
-            }
+            {"part": "helmet", "protection": 15},
+            {"part": "breastplate", "protection": 20},
+            {"part": "boots", "protection": 10}
         ],
         "weapon": {
             "name": "Two-handed Sword",
@@ -42,14 +33,8 @@ KNIGHTS = {
         "power": 30,
         "hp": 90,
         "armour": [
-            {
-                "part": "breastplate",
-                "protection": 15,
-            },
-            {
-                "part": "boots",
-                "protection": 10,
-            }
+            {"part": "breastplate", "protection": 15},
+            {"part": "boots", "protection": 10}
         ],
         "weapon": {
             "name": "Poisoned Sword",
@@ -69,10 +54,7 @@ KNIGHTS = {
         "power": 40,
         "hp": 70,
         "armour": [
-            {
-                "part": "breastplate",
-                "protection": 25,
-            }
+            {"part": "breastplate", "protection": 25}
         ],
         "weapon": {
             "name": "Sword",
@@ -89,43 +71,36 @@ KNIGHTS = {
 }
 
 
-def battle(knightsConfig):
-    # BATTLE PREPARATIONS:
-    for knight in knightsConfig:
-        Knight.apply_equipment(knight)
+def fight(first_knight: Knight, second_knight: Knight) -> None:
+    first_knight.hp -= (second_knight.power - first_knight.protection)
+    second_knight.hp -= (first_knight.power - second_knight.protection)
 
-    # -------------------------------------------------------------------------------
-    # BATTLE:
+    if first_knight.hp <= 0:
+        first_knight.hp = 0
 
-    # 1 Lancelot vs Mordred:
-    lancelot["hp"] -= mordred["power"] - lancelot["protection"]
-    mordred["hp"] -= lancelot["power"] - mordred["protection"]
+    if second_knight.hp <= 0:
+        second_knight.hp = 0
 
-    # check if someone fell in battle
-    if lancelot["hp"] <= 0:
-        lancelot["hp"] = 0
 
-    if mordred["hp"] <= 0:
-        mordred["hp"] = 0
+def battle(knights_config: dict) -> dict:
+    lancelot = Knight(knights_config["lancelot"])
+    arthur = Knight(knights_config["arthur"])
+    mordred = Knight(knights_config["mordred"])
+    red_knight = Knight(knights_config["red_knight"])
 
-    # 2 Arthur vs Red Knight:
-    arthur["hp"] -= red_knight["power"] - arthur["protection"]
-    red_knight["hp"] -= arthur["power"] - red_knight["protection"]
+    for knight in (lancelot, arthur, mordred, red_knight):
+        knight.apply_equipment()
 
-    # check if someone fell in battle
-    if arthur["hp"] <= 0:
-        arthur["hp"] = 0
+    fight(lancelot, mordred)
+    fight(arthur, red_knight)
 
-    if red_knight["hp"] <= 0:
-        red_knight["hp"] = 0
-
-    # Return battle results:
     return {
-        lancelot["name"]: lancelot["hp"],
-        arthur["name"]: arthur["hp"],
-        mordred["name"]: mordred["hp"],
-        red_knight["name"]: red_knight["hp"],
+        lancelot.name: lancelot.hp,
+        arthur.name: arthur.hp,
+        mordred.name: mordred.hp,
+        red_knight.name: red_knight.hp,
     }
 
 
-print(battle(KNIGHTS))
+if __name__ == "__main__":
+    print(battle(KNIGHTS))

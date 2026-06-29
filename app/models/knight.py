@@ -1,29 +1,26 @@
 class Knight:
-    def __init__(self, knight: dict) -> None:
-        self.name = knight["name"]
-        self.power = knight["power"]
-        self.hp = knight["hp"]
-        self.armour = knight["armour"]
-        self.weapon = knight["weapon"]
-        self.potion = knight["potion"]
+    def __init__(self, knight_data: dict) -> None:
+        self.name = knight_data["name"]
+        self.power = knight_data["power"]
+        self.hp = knight_data["hp"]
+        self.armour = knight_data["armour"]
+        self.weapon = knight_data["weapon"]
+        self.potion = knight_data["potion"]
+        self.protection = 0
 
-    def apply_equipment(self, knight: dict) -> None:
-        # apply armour
-        knight["protection"] = 0
-        for armour in knight["armour"]:
-            knight["protection"] += armour["protection"]
+    def apply_equipment(self) -> None:
+        for armour_part in self.armour:
+            self.protection += armour_part["protection"]
 
-        # apply weapon
-        knight["power"] += knight["weapon"]["power"]
+        self.power += self.weapon["power"]
 
-        # apply potion if exist
-        if knight["potion"] is not None:
-            if "power" in knight["potion"]["effect"]:
-                knight["power"] += knight["potion"]["effect"]["power"]
+        if self.potion is not None:
+            effect = self.potion["effect"]
+            if "power" in effect:
+                self.power += effect["power"]
 
-            if "protection" in knight["potion"]["effect"]:
-                knight["protection"] += knight["potion"]["effect"][
-                    "protection"]
+            if "protection" in effect:
+                self.protection += effect["protection"]
 
-            if "hp" in knight["potion"]["effect"]:
-                knight["hp"] += knight["potion"]["effect"]["hp"]
+            if "hp" in effect:
+                self.hp += effect["hp"]
